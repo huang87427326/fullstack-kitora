@@ -29,7 +29,7 @@ Kitora 是一个面向全球市场的 SaaS 产品，采用 Next.js 全栈 + Mono
 | 类别     | 选型                             |
 | -------- | -------------------------------- |
 | 语言     | TypeScript（严格模式）           |
-| 框架     | Next.js 15（App Router）         |
+| 框架     | Next.js 16（App Router）         |
 | UI       | React + Tailwind CSS + shadcn/ui |
 | 数据库   | PostgreSQL（Supabase 托管）      |
 | ORM      | Prisma                           |

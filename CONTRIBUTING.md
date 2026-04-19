@@ -201,7 +201,7 @@ feat(web): 新增 Pricing 页面
 fix(db): 修复 Organization 软删除过滤失效
 docs(roadmap): 调整 Phase 2 时间估算
 refactor(auth): 提取 session 校验逻辑到共享工具
-chore(deps): 升级 Next.js 到 15.2
+chore(deps): 升级 Next.js 到 16.2
 ```
 
 ### 破坏性变更
