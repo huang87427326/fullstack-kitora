@@ -1,0 +1,15 @@
+node_modules
+.next
+.turbo
+dist
+build
+coverage
+.pnpm-store
+
+pnpm-lock.yaml
+*.min.js
+*.min.css
+
+# 不由 Prettier 管理的运营/生成文件
+CHANGELOG.md
+LICENSE
