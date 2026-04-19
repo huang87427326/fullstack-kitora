@@ -57,7 +57,7 @@
 
 **三个 app 的初始 scaffold**
 
-- [ ] `apps/web`：Next.js 15 App Router 脚手架，访问根路径显示 "Hello Web"
+- [ ] `apps/web`：Next.js 16 App Router 脚手架，访问根路径显示 "Hello Web"
 - [ ] `apps/admin`：同上
 - [ ] `apps/marketing`：同上
 - [ ] 三者共享 Tailwind preset，引用 `packages/config/tailwind-preset.ts`

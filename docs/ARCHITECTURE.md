@@ -59,7 +59,7 @@
 | 类别          | 选型                                     | 说明               |
 | ------------- | ---------------------------------------- | ------------------ |
 | 语言          | TypeScript（严格模式）                   | 全栈统一           |
-| 框架          | Next.js 15 (App Router)                  | 前后端一体         |
+| 框架          | Next.js 16 (App Router)                  | 前后端一体         |
 | UI            | React + Tailwind CSS + shadcn/ui         |                    |
 | 数据库        | PostgreSQL                               | 通过 Supabase 托管 |
 | ORM           | Prisma                                   |                    |
