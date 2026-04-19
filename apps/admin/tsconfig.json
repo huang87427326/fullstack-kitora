@@ -1,10 +1,6 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@kitora/config/tsconfig/nextjs.json",
   "compilerOptions": {
-    "allowJs": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./*"]
     }

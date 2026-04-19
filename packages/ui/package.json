@@ -1,0 +1,31 @@
+{
+  "name": "@kitora/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Kitora 共享 React 组件（shadcn/ui 基础 + 业务扩展）",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./button": "./src/components/ui/button.tsx",
+    "./utils": "./src/lib/utils.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.1.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@kitora/config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}

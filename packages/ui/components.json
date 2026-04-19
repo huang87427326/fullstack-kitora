@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "../../apps/web/app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@kitora/ui/components",
+    "utils": "@kitora/ui/utils",
+    "ui": "@kitora/ui/components/ui",
+    "lib": "@kitora/ui/lib",
+    "hooks": "@kitora/ui/hooks"
+  },
+  "iconLibrary": "lucide"
+}
