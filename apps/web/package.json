@@ -10,11 +10,15 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
+    "@kitora/types": "workspace:*",
+    "@kitora/ui": "workspace:*",
+    "@kitora/utils": "workspace:*",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@kitora/config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

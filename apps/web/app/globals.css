@@ -1,1 +1,8 @@
 @import 'tailwindcss';
+@import '@kitora/config/tailwind.css';
+
+/*
+ * 让 @theme 中定义的 CSS 变量能被 Tailwind v4 的 source 扫描器感知到。
+ * 扫描 packages/ui 源码里的类名，确保跨 app 的共享组件 class 不被 tree-shaking 丢掉。
+ */
+@source '../../../packages/ui/src/**/*.{ts,tsx}';

@@ -1,1 +1,4 @@
 @import 'tailwindcss';
+@import '@kitora/config/tailwind.css';
+
+@source '../../../packages/ui/src/**/*.{ts,tsx}';

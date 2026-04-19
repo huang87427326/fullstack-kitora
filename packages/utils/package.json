@@ -1,0 +1,17 @@
+{
+  "name": "@kitora/utils",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Kitora 跨 app 复用的通用工具函数",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@kitora/config": "workspace:*",
+    "typescript": "^5"
+  }
+}
