@@ -1,0 +1,60 @@
+# Kitora CI
+#
+# PR / push 触发的自动校验：format:check → lint → typecheck → build
+# 与本地 pnpm 脚本完全同构，避免"本地过了 CI 没过"或反之。
+#
+# Turborepo 远程缓存：TURBO_TOKEN / TURBO_TEAM 由 repo secrets 提供，
+#   未配置时 turbo 会静默降级到纯本地缓存，不会失败。
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Turborepo 远程缓存：缺失时自动 no-op，无需 if 保护
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  # 告诉 Turborepo 这是 CI 环境，让它输出适合日志的简洁行
+  TURBO_LOG_ORDER: stream
+
+jobs:
+  verify:
+    name: Verify (format / lint / typecheck / build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prettier check
+        run: pnpm format:check
+
+      - name: ESLint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
