@@ -19,6 +19,50 @@ export default {
       'always',
       ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'ci', 'revert'],
     ],
+    // scope 白名单：与 CONTRIBUTING.md §Git 提交规范一致
+    // 允许 scope 为空（不强制填写），一旦填写必须命中白名单；
+    // 新增 app / package 时，请同步更新此处 + CONTRIBUTING.md
+    'scope-enum': [
+      2,
+      'always',
+      [
+        // === apps/* ===
+        'web',
+        'admin',
+        'marketing',
+
+        // === packages/* ===
+        'auth',
+        'config',
+        'db',
+        'email',
+        'i18n',
+        'types',
+        'ui',
+        'utils',
+
+        // === 跨目录聚合（多个 app / package 一起改时用）===
+        'apps',
+        'packages',
+
+        // === 工程 / 工具链 ===
+        'monorepo', // pnpm workspace / turbo 骨架
+        'tooling', // 构建脚本、开发工具、非上述细分的工程杂项
+        'lint', // eslint / prettier / editorconfig
+        'format', // 纯格式化（可选，通常走 type=style）
+        'husky', // husky hooks / lint-staged
+        'commitlint', // commitlint 本身
+        'pnpm', // pnpm 配置（.npmrc / 构建白名单 等）
+        'turbo', // turbo.json / 任务编排
+        'tsconfig', // TS 配置
+        'ci', // GitHub Actions workflow
+        'deps', // 依赖升级
+        'release', // 版本 / 发版流程
+        'ship', // 发布 / 部署脚本（scripts/ship 等）
+        'docs', // 仓库文档
+        'scripts', // scripts/ 目录下的脚本
+      ],
+    ],
     // subject 不能为空
     'subject-empty': [2, 'never'],
     // type 不能为空

@@ -38,10 +38,10 @@ const extraArgs = rawArgs.filter((a) => a !== '--no-wait');
 const hasBase = extraArgs.some((arg) => arg === '--base' || arg === '-B');
 
 // 0. 开车前先扫僵尸：清理本地已陈旧的 remote-tracking ref
-//    场景：上一轮 PR 合并后，另一台设备或人为触发过 --delete-branch，本机
-//    .git/refs/remotes/origin/ 下还留着指针。VSCode 等 UI 会继续显示这些
-//    早已不存在的分支，`git pull --prune` 只在后面 step 4 才跑，且 --no-wait
-//    模式下根本走不到，所以此处显式先 prune 一次，覆盖所有退出路径。
+//    场景：上一轮 ship 走的是 --no-wait / 被 Ctrl+C 中断 / 在别的设备上完成了
+//    合并，本机 .git/refs/remotes/origin/ 下还留着已不存在的分支指针。VSCode
+//    等 UI 会继续显示这些分支。step 4 的 prune 只能处理"本轮刚删的分支"，
+//    处理不了跨会话遗留的僵尸——所以这里显式再扫一次，覆盖所有历史退出路径。
 spawnSync('git', ['fetch', '--prune'], { stdio: 'inherit' });
 
 // 1. 建 PR
@@ -107,8 +107,17 @@ if (state !== 'MERGED') {
 //    注意用 -D 强删：GitHub squash merge 会生成新 commit，原分支的 commit SHA
 //    不在 main 上，`-d` 会判定为 "not fully merged" 拒删。此处已轮询确认
 //    state === MERGED，内容必在 main 里，-D 是安全且必要的。
+//
+//    ⚠️ 这里必须拆成「不带 refspec 的 fetch --prune」+「ff-only 合入」，不能
+//    直接用 `git pull --prune origin main`。原因：git 在 fetch/pull 带具体
+//    refspec 时，会把 --prune 的作用域也收窄到那条 refspec 上，只清 main 自己，
+//    不会清 origin/feat-xxx。刚被 GitHub auto-delete-branch 干掉的当前分支
+//    tracking ref 就会留下来——正是我们要根治的问题。
+//    `git fetch --prune origin`（不带具体 ref）才会按配置的完整 fetch refspec
+//    清理所有 stale remote-tracking refs。
 console.log('\n✅ PR 已合并，清理本地…');
 spawnSync('git', ['checkout', 'main'], { stdio: 'inherit' });
-spawnSync('git', ['pull', '--prune', 'origin', 'main'], { stdio: 'inherit' });
+spawnSync('git', ['fetch', '--prune', 'origin'], { stdio: 'inherit' });
+spawnSync('git', ['merge', '--ff-only', 'origin/main'], { stdio: 'inherit' });
 spawnSync('git', ['branch', '-D', branch], { stdio: 'inherit' });
 console.log('🎉 Done.');
