@@ -2,6 +2,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
+import globals from 'globals';
 
 export default tseslint.config(
   {
@@ -65,6 +66,24 @@ export default tseslint.config(
       },
     },
     ...tseslint.configs.disableTypeChecked,
+  },
+
+  // Node 脚本环境：scripts/ 下的一次性工具脚本 + 各类 *.config.* 都跑在
+  // Node 里，要声明 Node 全局，否则 `no-undef` 会把 process / console 等报成未定义
+  {
+    files: [
+      'scripts/**/*.{js,mjs,cjs,ts,mts,cts}',
+      '*.config.{js,mjs,cjs,ts,mts,cts}',
+      '**/*.config.{js,mjs,cjs,ts,mts,cts}',
+      'eslint.config.mjs',
+      'prisma.config.ts',
+      '**/prisma.config.ts',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
   },
 
   // 必须放最后：关闭所有与 Prettier 冲突的格式化类规则
