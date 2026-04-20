@@ -15,21 +15,24 @@
   "scripts": {
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
+    "db:format": "prisma format",
+    "db:validate": "prisma validate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "db:seed": "prisma db seed",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.3"
+    "@prisma/client": "6.19.3"
   },
   "devDependencies": {
     "@kitora/config": "workspace:*",
     "@types/node": "^20",
     "dotenv": "^16.4.7",
-    "prisma": "^6.19.3",
+    "prisma": "6.19.3",
     "tsx": "^4.19.2",
     "typescript": "^5"
   }
