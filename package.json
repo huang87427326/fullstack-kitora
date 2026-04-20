@@ -26,7 +26,7 @@
     "db:reset": "pnpm --filter @kitora/db db:reset",
     "db:seed": "pnpm --filter @kitora/db db:seed",
     "email:dev": "pnpm --filter @kitora/email email:dev",
-    "pr": "node scripts/pr.mjs"
+    "ship": "node scripts/ship.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [
