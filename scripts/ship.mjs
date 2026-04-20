@@ -3,11 +3,12 @@
  * ship —— 从「当前分支已 push」一路交付到「PR 合并、本地干净」的自动化入口。
  *
  * 流程：
+ *   0. git fetch --prune              先清理已被远端删除的僵尸 tracking ref
  *   1. gh pr create --fill            用最近一条 commit 填 title/body
  *   2. gh pr merge --auto --squash    入 auto-merge 队列，合并后自动删远端分支
  *   3. 轮询 gh pr view 的 state       每 15 秒查一次，直到 MERGED / CLOSED / 超时
  *   4. git checkout main && pull      拉回已包含本次合并的最新 main
- *   5. git branch -d <feature>        清理本地功能分支
+ *   5. git branch -D <feature>        清理本地功能分支
  *
  * 用法：
  *   pnpm ship                              # 最常见：全流程跑到本地干净
@@ -35,6 +36,13 @@ const noWait = rawArgs.includes('--no-wait');
 const extraArgs = rawArgs.filter((a) => a !== '--no-wait');
 
 const hasBase = extraArgs.some((arg) => arg === '--base' || arg === '-B');
+
+// 0. 开车前先扫僵尸：清理本地已陈旧的 remote-tracking ref
+//    场景：上一轮 PR 合并后，另一台设备或人为触发过 --delete-branch，本机
+//    .git/refs/remotes/origin/ 下还留着指针。VSCode 等 UI 会继续显示这些
+//    早已不存在的分支，`git pull --prune` 只在后面 step 4 才跑，且 --no-wait
+//    模式下根本走不到，所以此处显式先 prune 一次，覆盖所有退出路径。
+spawnSync('git', ['fetch', '--prune'], { stdio: 'inherit' });
 
 // 1. 建 PR
 const createArgs = ['pr', 'create', '--fill', ...(hasBase ? [] : ['--base', 'main']), ...extraArgs];
