@@ -1,0 +1,10 @@
+{
+  "extends": "@kitora/config/tsconfig/base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "templates/**/*.ts", "templates/**/*.tsx"],
+  "exclude": ["node_modules", "dist", ".turbo", ".react-email"]
+}

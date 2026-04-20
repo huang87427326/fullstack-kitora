@@ -49,3 +49,7 @@ test-results/
 # Misc
 *.pem
 .cache/
+
+# Temp files
+_tmp_*
+*.tmp

@@ -1,0 +1,36 @@
+{
+  "name": "@kitora/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Kitora 共享 Prisma schema 与 PrismaClient 单例",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "prisma",
+    "prisma.config.ts"
+  ],
+  "scripts": {
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "prisma db seed",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  },
+  "devDependencies": {
+    "@kitora/config": "workspace:*",
+    "@types/node": "^20",
+    "dotenv": "^16.4.7",
+    "prisma": "^6.19.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}

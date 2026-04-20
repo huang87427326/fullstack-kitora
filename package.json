@@ -18,7 +18,14 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "clean": "turbo run clean && rm -rf node_modules",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "pnpm --filter @kitora/db db:generate",
+    "db:migrate:dev": "pnpm --filter @kitora/db db:migrate:dev",
+    "db:migrate:deploy": "pnpm --filter @kitora/db db:migrate:deploy",
+    "db:studio": "pnpm --filter @kitora/db db:studio",
+    "db:reset": "pnpm --filter @kitora/db db:reset",
+    "db:seed": "pnpm --filter @kitora/db db:seed",
+    "email:dev": "pnpm --filter @kitora/email email:dev"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [
