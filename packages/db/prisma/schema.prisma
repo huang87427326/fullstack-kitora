@@ -1,0 +1,157 @@
+// Kitora core schema
+//
+// 命名约定：DB 物理层 snake_case（复数表名），Prisma / TypeScript 层
+// PascalCase 单数 + camelCase，通过 @map / @@map 显式映射。
+// 具体规则见 CONTRIBUTING.md §数据库，方案理由见 ARCHITECTURE.md §6.3。
+//
+// 多租户：共享数据库 + organization_id 隔离。业务表（users / organizations
+// 本身除外）必须带 organization_id 外键。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// User
+// ============================================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  name          String?
+  avatarUrl     String?   @map("avatar_url")
+
+  // i18n / 本地化偏好，配合 ARCHITECTURE.md §10 的语言检测优先级使用
+  locale   String @default("en")
+  timezone String @default("UTC")
+  currency String @default("USD")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt      @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  memberships     Membership[]
+  sentInvitations Invitation[] @relation("invitation_inviter")
+
+  @@index([email], map: "users_email_idx")
+  @@map("users")
+}
+
+// ============================================================
+// Organization（租户）
+// ============================================================
+
+model Organization {
+  id      String  @id @default(uuid())
+  name    String
+  slug    String  @unique
+  logoUrl String? @map("logo_url")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt      @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  memberships  Membership[]
+  subscription Subscription?
+  invitations  Invitation[]
+
+  @@index([slug], map: "organizations_slug_idx")
+  @@map("organizations")
+}
+
+// ============================================================
+// Membership（User × Organization 关联 + 角色）
+//
+// role 使用 String + 应用层 Zod 校验（CONTRIBUTING.md §数据库），
+// 取值：'owner' | 'admin' | 'member'
+// ============================================================
+
+model Membership {
+  id             String @id @default(uuid())
+  userId         String @map("user_id")
+  organizationId String @map("organization_id")
+  role           String @default("member")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId], map: "memberships_user_id_organization_id_key")
+  @@index([organizationId], map: "memberships_organization_id_idx")
+  @@map("memberships")
+}
+
+// ============================================================
+// Subscription（归属于 Organization，由 Lemon Squeezy webhook 同步）
+//
+// 状态机见 ARCHITECTURE.md §8.3：
+//   pending → active → past_due → cancelled
+//          ↘ (paused) → active
+//          ↘ (unpaid) → cancelled
+// ============================================================
+
+model Subscription {
+  id             String @id @default(uuid())
+  organizationId String @unique @map("organization_id")
+
+  // 'pending' | 'active' | 'past_due' | 'paused' | 'cancelled' | 'unpaid'
+  status String @default("pending")
+  // 'free' | 'pro' | '...'（具体 plan 在 Phase 1 确定后写入应用层常量）
+  plan   String @default("free")
+
+  // Lemon Squeezy 侧的对应 ID，用于 webhook 查询 / 反查
+  externalSubscriptionId String? @unique @map("external_subscription_id")
+  externalCustomerId     String? @map("external_customer_id")
+
+  currentPeriodEnd DateTime? @map("current_period_end")
+  cancelAt         DateTime? @map("cancel_at")
+  cancelledAt      DateTime? @map("cancelled_at")
+  trialEndsAt      DateTime? @map("trial_ends_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([status], map: "subscriptions_status_idx")
+  @@map("subscriptions")
+}
+
+// ============================================================
+// Invitation（团队邀请）
+//
+// status：'pending' | 'accepted' | 'revoked' | 'expired'
+// role：同 Membership.role
+// ============================================================
+
+model Invitation {
+  id             String @id @default(uuid())
+  organizationId String @map("organization_id")
+  inviterId      String @map("inviter_id")
+  email          String
+  role           String @default("member")
+  status         String @default("pending")
+  token          String @unique
+
+  expiresAt  DateTime  @map("expires_at")
+  acceptedAt DateTime? @map("accepted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  inviter      User         @relation("invitation_inviter", fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, email], map: "invitations_organization_id_email_key")
+  @@index([token], map: "invitations_token_idx")
+  @@map("invitations")
+}

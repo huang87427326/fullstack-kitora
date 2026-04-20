@@ -1,0 +1,13 @@
+{
+  "common": {
+    "appName": "Kitora",
+    "loading": "Loading...",
+    "error": "Something went wrong."
+  },
+  "marketing": {
+    "hero": {
+      "cta": "Start free trial",
+      "secondaryCta": "View pricing"
+    }
+  }
+}

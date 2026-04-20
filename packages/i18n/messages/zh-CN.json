@@ -1,0 +1,13 @@
+{
+  "common": {
+    "appName": "Kitora",
+    "loading": "加载中...",
+    "error": "出了点问题。"
+  },
+  "marketing": {
+    "hero": {
+      "cta": "开始免费试用",
+      "secondaryCta": "查看定价"
+    }
+  }
+}

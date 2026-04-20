@@ -1,0 +1,17 @@
+{
+  "name": "@kitora/auth",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Kitora 认证逻辑封装（Phase 1 在此实现 Supabase Auth 集成）",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@kitora/config": "workspace:*",
+    "typescript": "^5"
+  }
+}
