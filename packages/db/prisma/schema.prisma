@@ -12,8 +12,10 @@
 //   - DIRECT_URL：DDL / migrate / studio（Supabase direct 5432）
 //
 // 注：Prisma VSCode 扩展的 LSP 版本可能比 CLI 新，会对 url/directUrl 报
-// "no longer supported" 的前瞻告警——CLI 6.19.3 的 schema WASM 校验器仍然
-// 要求这两个字段存在，保持不动。等 CLI 正式切到 JS engine 再迁。
+// "no longer supported" 的前瞻告警——但 CLI 6.19.3 的 schema WASM 校验器
+// 仍然强制要求这两个字段存在于 datasource 块里（即使 prisma.config.ts 的
+// `engine: 'classic'` + `datasource` 能在运行期覆盖）。保持不动，等 CLI
+// 正式跟 LSP 对齐再迁。
 
 generator client {
   provider = "prisma-client-js"

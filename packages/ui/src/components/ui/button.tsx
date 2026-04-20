@@ -30,19 +30,21 @@ const buttonVariants = cva(
   },
 );
 
+/**
+ * Button 组件 props：
+ * - 继承原生 `<button>` 所有属性（含 React 19 的 ref prop）
+ * - 加上 buttonVariants 暴露的 variant / size
+ * - asChild 开启后使用 Radix Slot，把样式合入子元素（便于把 Button 当作 Link）
+ */
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
-    return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
-    );
-  },
-);
+export function Button({ className, variant, size, asChild = false, ...props }: ButtonProps) {
+  const Comp = asChild ? Slot : 'button';
+  return <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+}
 Button.displayName = 'Button';
 
 export { buttonVariants };
