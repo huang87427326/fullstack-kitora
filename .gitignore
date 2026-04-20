@@ -36,7 +36,10 @@ Thumbs.db
 
 # Editors
 .idea/
-.vscode/
+# .vscode/ 下只追踪团队共享的工作区配置，其他（launch.json、私人习惯等）保持忽略
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 *.swp
 *.swo
 
