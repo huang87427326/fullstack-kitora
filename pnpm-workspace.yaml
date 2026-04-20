@@ -1,3 +1,20 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# pnpm v10 起默认禁用所有三方包的 install 脚本；这里显式放行我们信任、
+# 且需要编译原生二进制 / 生成 client 的官方包。
+#
+# 为什么 sharp / @parcel/watcher 必须 true：
+#   - sharp：Next.js <Image> 的 image optimization 后端，禁用会导致生产环境
+#     退化到 JS 降级或构建失败（Vercel 尤其敏感）
+#   - @parcel/watcher：turbo / Next dev server 的文件系统 watcher 原生加速，
+#     禁用会退化到 polling，吃 CPU
+allowBuilds:
+  '@parcel/watcher': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  '@swc/core': true
+  esbuild: true
+  prisma: true
+  sharp: true
