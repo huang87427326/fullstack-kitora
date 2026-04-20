@@ -9,7 +9,8 @@
   },
   "files": [
     "src",
-    "prisma"
+    "prisma",
+    "prisma.config.ts"
   ],
   "scripts": {
     "postinstall": "prisma generate",
@@ -21,16 +22,14 @@
     "db:seed": "prisma db seed",
     "typecheck": "tsc --noEmit"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
-    "@prisma/client": "^6.2.0"
+    "@prisma/client": "^6.19.3"
   },
   "devDependencies": {
     "@kitora/config": "workspace:*",
     "@types/node": "^20",
-    "prisma": "^6.2.0",
+    "dotenv": "^16.4.7",
+    "prisma": "^6.19.3",
     "tsx": "^4.19.2",
     "typescript": "^5"
   }

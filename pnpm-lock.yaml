@@ -188,7 +188,7 @@ importers:
   packages/db:
     dependencies:
       '@prisma/client':
-        specifier: ^6.2.0
+        specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
     devDependencies:
       '@kitora/config':
@@ -197,8 +197,11 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.19.39
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.6.1
       prisma:
-        specifier: ^6.2.0
+        specifier: ^6.19.3
         version: 6.19.3(typescript@5.9.3)
       tsx:
         specifier: ^4.19.2

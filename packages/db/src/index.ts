@@ -7,6 +7,9 @@
  *   把实例挂到 globalThis 上重用，保证整个 dev server 生命周期内只
  *   有一份连接池
  *
+ * 连接字符串从 schema.prisma 的 `env("DATABASE_URL")` 读取（Supabase
+ * pgbouncer URL），migrate/studio 另走 DIRECT_URL。
+ *
  * 同时把 Prisma 生成的全部类型和命名空间 re-export 出去，调用方只需要
  * `import { prisma, type User } from '@kitora/db'` 即可，不必再直接
  * 依赖 `@prisma/client`。
