@@ -7,19 +7,24 @@
 // 多租户：共享数据库 + organization_id 隔离。业务表（users / organizations
 // 本身除外）必须带 organization_id 外键。
 
-// 连接信息在 prisma.config.ts 里通过 `engine: 'classic'` + `datasource: { url, directUrl }`
-// 注入：
+// 连接信息：
 //   - DATABASE_URL：运行时连接（Supabase pgbouncer 6543，transaction mode）
 //   - DIRECT_URL：DDL / migrate / studio（Supabase direct 5432）
-// schema.prisma 的 datasource 块只保留 provider；url/directUrl 由 config 文件覆盖，
-// 这也是 Prisma 6 推荐的做法（schema 不再承载运行时连接配置）。
+//
+// 注：Prisma VSCode 扩展的 LSP 版本可能比 CLI 新，会对 url/directUrl 报
+// "no longer supported" 的前瞻告警——但 CLI 6.19.3 的 schema WASM 校验器
+// 仍然强制要求这两个字段存在于 datasource 块里（即使 prisma.config.ts 的
+// `engine: 'classic'` + `datasource` 能在运行期覆盖）。保持不动，等 CLI
+// 正式跟 LSP 对齐再迁。
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================================

@@ -3,12 +3,16 @@
  *
  * 用途：
  *   1. 替代已 deprecated 的 `package.json#prisma` 配置（主要是 seed 脚本）
- *   2. 显式加载 .env——CLI 一旦检测到 prisma.config.ts，就会跳过自动 env 加载，
- *      所以必须在这里调用 dotenv，下面的 datasource 以及运行时 `@prisma/client`
- *      才能拿到 DATABASE_URL / DIRECT_URL
- *   3. 集中声明数据源连接（engine: 'classic' + datasource），覆盖 schema.prisma
- *      里的 `datasource db { url ... }` 字段——这是 Prisma 6 推荐的做法，
- *      schema.prisma 不再承载连接配置
+ *   2. 显式加载 .env——CLI 一旦检测到 prisma.config.ts，就会跳过自动 env 加载
+ *      （日志里能看到 "Prisma config detected, skipping environment variable
+ *      loading."），schema.prisma 里的 `env("DATABASE_URL")` / `env("DIRECT_URL")`
+ *      要靠这里来喂
+ *
+ * 关于连接模式：
+ *   本来 Prisma 6 提供了 `engine: 'classic'` + `datasource: { url, directUrl }`
+ *   可以把 URL 迁到这里集中管理，但 CLI 6.19.3 的 WASM schema 校验器仍然
+ *   强制要求 schema.prisma 的 datasource 块里有 `url`，所以暂不迁，保持
+ *   schema env(...) 这套写法。
  *
  * 参考：https://pris.ly/prisma-config
  */
@@ -26,32 +30,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 loadEnv({ path: path.resolve(here, '..', '..', '.env') });
 loadEnv({ path: path.resolve(here, '.env'), override: true });
 
-// Supabase 连接：
-//   - DATABASE_URL：运行时连接（pgbouncer 6543，transaction mode）
-//   - DIRECT_URL：DDL / migrate / studio（direct 5432）
-//
-// 若 DATABASE_URL 未设置（首次 clone / CI 装依赖时很常见），退化成一个
-// 明显不可用的占位值：prisma generate 不需要真实数据库也能跑通（postinstall
-// 不会被阻塞），真正需要连接的命令（migrate / push / studio）会在执行阶段
-// 由 Prisma 自己报 "can't reach database" 之类的错——比在 config 里硬抛更
-// 贴近用户意图。
-const DATABASE_URL_PLACEHOLDER = 'postgresql://placeholder:placeholder@localhost:5432/placeholder';
-const databaseUrl = process.env.DATABASE_URL ?? DATABASE_URL_PLACEHOLDER;
-
-if (!process.env.DATABASE_URL) {
-  console.warn(
-    '[prisma] DATABASE_URL 未设置，使用占位 URL。generate 可以继续，' +
-      'migrate / push / studio 等需要连 DB 的命令会失败——请在 .env 中配置后重试。',
-  );
-}
-
 export default defineConfig({
   schema: path.join('prisma', 'schema.prisma'),
-  engine: 'classic',
-  datasource: {
-    url: databaseUrl,
-    directUrl: process.env.DIRECT_URL,
-  },
   migrations: {
     path: path.join('prisma', 'migrations'),
     seed: 'tsx prisma/seed.ts',
