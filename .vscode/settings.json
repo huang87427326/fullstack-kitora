@@ -31,13 +31,12 @@
   "eslint.useFlatConfig": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
-  // ────────────────────────────────────────────────────────────────
-  // TypeScript
-  // ────────────────────────────────────────────────────────────────
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-
+  // TypeScript SDK / import specifier 相关设置已从这里移除：
+  //   - typescript.tsdk / typescript.enablePromptUseWorkspaceTsdk /
+  //     typescript.preferences.importModuleSpecifier 在新版 VSCode 中已弃用
+  //   - 采用默认行为即可：VSCode 会自动探测 workspace TypeScript 版本，
+  //     import 路径默认使用 "shortest"，符合本仓库习惯
+  //
   // ────────────────────────────────────────────────────────────────
   // 其他杂项
   // ────────────────────────────────────────────────────────────────
